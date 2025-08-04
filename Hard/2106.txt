@@ -1,0 +1,101 @@
+class Solution {
+    public int maxTotalFruits(int[][] fruits, int startPos, int k) {
+             
+             int n = fruits.length;  
+             int[][] prefSum = new int[n][2];
+
+             
+
+            
+             for(int i = 0; i<n; i++) {
+                   prefSum[i][0] = fruits[i][0];
+                   prefSum[i][1] = fruits[i][1] + (i > 0 ? prefSum[i-1][1] : 0);
+             } 
+
+             int maxPos = 0;  
+
+             int d = 0;
+             while(d <= k / 2) {
+                   // for left 
+                   int remain =  (k - (2 * d)); 
+                   int leftPos = startPos - d;
+                   int rightPos = startPos + remain;
+
+                   int res = getPosSum(prefSum, leftPos, rightPos);
+                   maxPos = Math.max(maxPos, res);
+
+                   // for right
+                   leftPos = startPos - remain;
+                   rightPos = startPos + d;
+
+                   res = getPosSum(prefSum, leftPos, rightPos);
+                   maxPos = Math.max(maxPos, res);
+
+                   d++;
+
+             }
+
+
+           
+
+
+        return maxPos; 
+            
+    }
+
+
+    private int getPosSum(int[][] prefSum, int leftPos, int rightPos) {
+
+            int leftIdx = lowerBound(prefSum, leftPos);
+            int rightIdx = upperBound(prefSum, rightPos) - 1;
+
+             if (leftIdx >= prefSum.length || prefSum[leftIdx][0] > rightPos || prefSum[rightIdx][0] < leftPos)
+                return 0; 
+
+            if(leftIdx <= rightIdx) {
+                  return prefSum[rightIdx][1] - (leftIdx > 0 ? prefSum[leftIdx-1][1] : 0);
+            }  
+           
+           return 0;
+      }
+
+
+    private int lowerBound(int[][] prefSum, int pos) {
+            
+            int l = 0;
+            int r = prefSum.length - 1;
+
+            while(l < r) {
+
+                 int mid = l + (r - l) / 2;
+
+                 if(prefSum[mid][0] < pos) {
+                       l = mid + 1;
+                 }  else{
+                      r = mid;
+                 }
+                 
+           }
+
+         return l;
+    }
+
+    private int upperBound(int[][] prefSum, int pos) {
+            
+            int l = 0;
+            int r = prefSum.length;
+
+            while(l < r) {
+                   
+                   int mid = l + (r - l)/2;
+
+                   if(prefSum[mid][0] <= pos) {
+                        l = mid + 1;
+                   }else{
+                        r = mid;
+                   }
+            }
+
+            return l;
+    }
+}
