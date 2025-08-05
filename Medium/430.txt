@@ -1,0 +1,47 @@
+/*
+// Definition for a Node.
+class Node {
+    public int val;
+    public Node prev;
+    public Node next;
+    public Node child;
+};
+*/
+
+class Solution {
+    public Node flatten(Node head) {
+
+          return flatten(head, new ArrayList<>());               
+               
+    }
+
+    private Node flatten(Node curr, List<Node> ptr) {
+            if(curr == null) {
+                  return curr;
+            } 
+
+               
+            if(curr.next == null && ptr.size() > 0) {
+                     Node nextPtr = ptr.remove(ptr.size()-1); 
+                     curr.next = nextPtr;   
+            }  
+
+            Node next = curr.next; 
+            if(curr.child != null) {
+                   next = curr.child;
+                   ptr.add(curr.next);
+                   curr.next = next;
+           }
+
+
+            Node nextPtr = flatten(next, ptr);
+
+             if(nextPtr != null) {
+                   nextPtr.prev = curr;
+             }
+         
+  
+             curr.child = null;
+             return curr;
+      }
+}
