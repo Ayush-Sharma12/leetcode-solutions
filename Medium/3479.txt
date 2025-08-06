@@ -1,0 +1,62 @@
+class Solution {
+    public int numOfUnplacedFruits(int[] fruits, int[] baskets) {
+             
+            
+         int n = fruits.length;
+         int[] st = new int[4*n];
+         buildSegmentTree(st, baskets, 0, 0, n-1);
+
+         int unPlaced = 0;  
+         for(int fruit : fruits) {
+              if(!placed(st, fruit, 0, 0, n-1)) {
+                   unPlaced++;
+              }
+         }  
+
+
+        return unPlaced;    
+             
+    }
+
+    private void buildSegmentTree(int[] st, int[] baskets, int i, int l, int r) {
+           if(l == r) {
+              st[i] = baskets[r];
+              return;
+           }
+
+           int mid = l + (r - l)/2;
+
+           buildSegmentTree(st, baskets, 2*i+1, l, mid);
+           buildSegmentTree(st, baskets, 2*i+2, mid+1, r);
+
+           st[i] = Math.max(st[2*i+1], st[2*i+2]);
+    }
+  
+    private boolean placed(int[] st, int fruit, int i, int l, int r) {
+            
+            if(st[i] < fruit) {
+                 return false;
+            }
+            
+            if(l == r) {
+                  st[i] = -1;
+                  return true;
+            }
+
+            int mid = l + (r - l)/2;
+            boolean isPlace = false;
+
+            if(st[2*i+1] >= fruit) {
+                  isPlace = placed(st, fruit, 2*i+1, l, mid);
+            } else{
+                 isPlace = placed(st, fruit, 2*i+2, mid+1, r);
+            }
+
+            st[i] = Math.max(st[2*i+1], st[2*i+2]);
+
+            return isPlace;
+            
+    }
+
+
+}
