@@ -1,0 +1,45 @@
+class Solution {
+    final private int mod = (int)1e9 + 7; 
+    public int numberOfWays(int n, int x) {
+
+            List<Integer> possibleNum = new ArrayList<>();
+            for(int num = 1; num <= n; num++) {
+                 if((int)Math.pow(num, x) <= n) {
+                      possibleNum.add((int)Math.pow(num, x));
+                 }  
+            }    
+             
+             int size = possibleNum.size();
+             int[][] dp = new int[n+1][size];
+             for(int[] innerDp : dp) {
+                   Arrays.fill(innerDp, -1);
+             } 
+             return totalWays(n, possibleNum, 0,   dp);
+    }
+  
+    
+    private int totalWays(int n, List<Integer> possibleNum, int idx,  int[][] dp) {
+            if(n == 0) {
+                 return 1;
+            }
+      
+           if(n < 0 || idx == possibleNum.size()) {
+                  return 0;
+            }
+           
+            if(dp[n][idx] != -1) {
+                  return dp[n][idx];
+            }
+
+            long take = totalWays(n-possibleNum.get(idx), possibleNum, idx+1, dp);
+            long notTake = totalWays(n, possibleNum, idx+1, dp);
+
+
+            return dp[n][idx] = (int)((take + notTake) % mod);
+
+
+
+    } 
+
+   
+}
